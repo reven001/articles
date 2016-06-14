@@ -97,7 +97,11 @@ a, .post-title a {
   color: #841212;
   text-decoration: none;
 }
-
+.post-title div {
+    color: #841212;
+	float:right;
+    text-decoration: none;
+}
 a strong {
   color: inherit;
 }
@@ -286,7 +290,7 @@ tbody tr:nth-child(odd) th {
  */
 
 .masthead {
-	margin-bottom: 3rem;
+	margin-bottom: 2rem;
 	text-align: center;
 	padding-top: .8rem;
 	padding-bottom: .8rem;
@@ -770,6 +774,8 @@ div.toc {
 	font-style: italic;
 	font-size: .9rem;
 	color: gray;
+	text-align: right;
+	margin-right: 1rem;
 }
 
 /* Footnotes styles */
