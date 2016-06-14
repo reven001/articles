@@ -2,9 +2,9 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>reven的文章</title>
- <link href="/atom.xml" rel="self"/>
- <link href="/"/>
- <updated>2016-06-14T14:04:22+08:00</updated>
+ <link href="/articles/atom.xml" rel="self"/>
+ <link href="/articles/"/>
+ <updated>2016-06-14T14:17:04+08:00</updated>
  <id></id>
  <author>
    <name>reven.wu</name>
