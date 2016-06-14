@@ -3,7 +3,7 @@
 
   <head>
   <!-- Canonical link to help search engines -->
-  <link rel="canonical" href="/"/>
+  <link rel="canonical" href="/search/"/>
 
   <!-- Basic meta elements -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
 
   <!--   Dublin Core metadata for Zotero -->  
-  <meta name="DC.title" content="Home" />
+  <meta name="DC.title" content="Search" />
   <meta name="DC.creator" content="" />
   <meta name="DC.contributor" content="" />
   <meta name="DC.date" content="" />
@@ -21,7 +21,7 @@
   <meta name="DC.source" content="reven的文章" />
   
   <!-- Open Graph metadata -->
-  <meta property="og:title" content="Home"/>
+  <meta property="og:title" content="Search"/>
   <meta property="og:author" content=""/>
   <meta property="og:book:release_date" content=""/>
   <meta property="og:type" content="website" />
@@ -30,7 +30,7 @@
    
   <title>
     
-      reven的文章
+      Search
     
   </title>
 
@@ -60,58 +60,20 @@
       </div>
 
       <div class="container content" id="main">
-        <div class="toc">
-  <h2>文章列表</h2>
-  <ul class="post">
-  
-  
-    <li class="post-title">
-      <a href="/texts/a-julia/">
-        A Julia de Burgos
-      </a>
-    </li>
-  
-  
-    <li class="post-title">
-      <a href="/texts/delayed/">
-        Delayed till she had ceased to know
-      </a>
-    </li>
-  
-  
-    <li class="post-title">
-      <a href="/texts/dreams/">
-        Dreams
-      </a>
-    </li>
-  
-  
-    <li class="post-title">
-      <a href="/texts/narrative/">
-        Narrative of the Life of Frederick Douglass
-      </a>
-    </li>
-  
-  
-    <li class="post-title">
-      <a href="/texts/o-captain/">
-        O Captain! My Captain!
-      </a>
-    </li>
-  
-  
-    <li class="post-title">
-      <a href="/texts/raising/">
-        A Raisin in the Sun
-      </a>
-    </li>
-  
-  </ul>  
+        <div class="page">
+  <h1 class="page-title">Search</h1>
+  <form id="site_search">
+<div>In case you don't want to use the search box provided by your browser:</div>
+<br>
+<input id="search" type="text"/></form>
+
+<div id="results"></div>
+<ul id="search_results"></ul>
+<script src="/public/js/elasticlunr.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="/public/js/search.js"></script>
 
 </div>
-
-
-
 
       </div>
     </div>
