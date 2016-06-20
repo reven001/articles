@@ -123,6 +123,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -.025rem;
   line-height: 1.25;
   text-rendering: optimizeLegibility;
+  color: #2E8FE0;
 }
 
 h1 {
@@ -131,6 +132,7 @@ h1 {
 
 h1.post-title {
 	font-size: 1.4rem;
+	text-align: center;
 }
 
 h2 {
@@ -155,6 +157,7 @@ h4, h5, h6 {
 p {
   margin-top: 0;
   margin-bottom: 1rem;
+  /*text-indent: 2em;*/
 }
 
 strong {
@@ -215,7 +218,10 @@ blockquote {
 	margin: 0 0 20px 0; 
   	color: #454545;
 	border-left: none;
-	font-style: italic;
+	background: #d9e9ff;
+    border-style: dotted dotted dotted solid;
+    border-width: 1px 1px 1px 5px;
+    border-color: #5bbcdd;
 }
 
 blockquote p:last-child {
@@ -705,10 +711,12 @@ div.toc {
 /* If you want your lines not to wrap on small screens, add the rule "white-space: nowrap;"; If you want you want to remove the hanging indent, reset the padding-left to 0 and erase text-indent */
 
 .poetry ul, ul.poetry {
-	list-style: none;
+/*	list-style: none;
 	list-style-type: none;
-	padding-left: 1rem;
 	text-indent: -1rem;
+	*/
+	padding-left: 1rem;
+	
 }
 
 

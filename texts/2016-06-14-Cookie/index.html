@@ -13,23 +13,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
 
   <!--   Dublin Core metadata for Zotero -->  
-  <meta name="DC.title" content="我所理解的cookie" />
-  <meta name="DC.creator" content="Julia de Burgos" />
+  <meta name="DC.title" content="Cookie回顾" />
+  <meta name="DC.creator" content="" />
   <meta name="DC.contributor" content="" />
   <meta name="DC.date" content="" />
   <meta name="DC.rights" content="" />
   <meta name="DC.source" content="reven的文章" />
   
   <!-- Open Graph metadata -->
-  <meta property="og:title" content="我所理解的cookie"/>
-  <meta property="og:author" content="Julia de Burgos"/>
+  <meta property="og:title" content="Cookie回顾"/>
+  <meta property="og:author" content=""/>
   <meta property="og:book:release_date" content=""/>
   <meta property="og:type" content="website" />
   <meta property="og:url" content=""/>
    
   <title>
     
-      我所理解的cookie
+      Cookie回顾
     
   </title>
 
@@ -60,17 +60,15 @@
 
       <div class="container content" id="main">
         <div class="poetry">
-  <h1 class="post-title">我所理解的cookie</h1>
+  <h1 class="post-title">Cookie回顾</h1>
   <p class="citation">  2016-06-14</p>
-  <div class="highlighter-rouge"><pre class="highlight"><code>首先得理解什么时候cookie?
+  <div class="highlighter-rouge"><pre class="highlight"><code>首先得理解什么时候Cookie?
 </code></pre>
 </div>
 
-<p>HTTP协议是一种无状态、无连接的协议，不能在服务器上保持一次会话的连续状态信息。随着WWW的不断发展，HTTP的无状态性不能满足某些应用的需求，给Web服务器和客户端的操作带来种种不便。在此背景下，提出HTTP的状态管理机制———Cookie机制，它是对HTTP协议的一种补充，以保持服务器和客户端的连续状态。</p>
+<p>用过HTTP的都知道，HTTP协议是一种无状态、无连接的协议，不能在服务器上保持一次会话的连续状态信息。HTTP的无状态性不能满足某些应用的需求，给Web服务器和客户端的操作带来种种不便。在此背景下，提出HTTP的状态管理机制———Cookie机制，它是对HTTP协议的一种补充，以保持服务器和客户端的连续状态。</p>
 
-<p>Cookie是指在HTTP协议下，服务器或脚本可以维护客户端计算机上信息的一种方式 。通俗地说，Cookie是一种能够让网站Web服务器把少量数据储存到客户端的硬盘或内存里，或是从客户端的硬盘里读取数据的一种技术。</p>
-
-<p>Cookie文件信息片断以“名/值”对（name-vaiuepairs）的形式储存，一个“名/值”对仅仅是一条命名的数据。</p>
+<p>Cookie就是在HTTP协议下,服务器暂存放在你的电脑里的资料,通俗地说，Cookie是一种能够让网站Web服务器把少量数据储存到客户端的硬盘或内存里，或是从客户端的硬盘里读取数据的一种技术。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>Cookie基本工作原理
 </code></pre>
@@ -78,21 +76,71 @@
 
 <p>Cookie使用HTTPHeader传递数据。Cookie机制定义了两种报头：Set-Cookie报头和Cookie报头。Set-Cookie报头包含于Web服务器的响应头（ResponseHeader）中，Cookie报头包含在浏览器客户端请求头（RequestHeader）中。</p>
 
-<p>（1）客户端在浏览器的地址栏中键入Web服务器的URL，浏览器发送读取网页的请求。</p>
+<ol>
+  <li>客户端在浏览器的地址栏中键入Web服务器的URL，浏览器发送读取网页的请求。</li>
+  <li>服务器接收到请求后，产生一个Set-Cookie报头，放在HTTP报文中一起回传客户端，发起一次会话。</li>
+  <li>客户端收到应答后，若要继续该次会话，则将Set-Cook-ie中的内容取出，形成一个Cookie.txt文件储存在客户端计算机里。</li>
+  <li>当客户端再次向服务器发出请求时，浏览器先在电脑里寻找对应该网站的Cookie.txt文件。如果找到，则根据此Cookie.txt产生Cookie报头，放在HTTP请求报文中发给服务器。</li>
+  <li>服务器接收到包含Cookie报头的请求，检索其Cookie中与用户有关的信息，生成一个客户端所请示的页面应答传递给客户端。 浏览器的每一次网页请求，都可以传递已存在的Cookie文件，例如，浏览器的打开或刷新网页操作。</li>
+</ol>
 
-<p>（2）服务器接收到请求后，产生一个Set-Cookie报头，放在HTTP报文中一起回传客户端，发起一次会话。</p>
+<blockquote>
+  <p><strong>注意</strong>:
+Cookie功能需要浏览器的支持。
+如果浏览器不支持Cookie(如大部分手机中的浏览器)或者把Cookie禁用了，Cookie功能就会失效。不同的浏览器采用不同的方式保存Cookie。</p>
+</blockquote>
 
-<p>（3）客户端收到应答后，若要继续该次会话，则将Set-Cook-ie中的内容取出，形成一个Cookie.txt文件储存在客户端计算机里。</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>cookie的存储方式
+</code></pre>
+</div>
 
-<p>（4）当客户端再次向服务器发出请求时，浏览器先在电脑里寻找对应该网站的Cookie.txt文件。如果找到，则根据此Cookie.txt产生Cookie报头，放在HTTP请求报文中发给服务器。</p>
+<p>Cookie文件信息片断以“名/值”对（name-vaiuepairs）的形式储存，一个“名/值”对仅仅是一条命名的数据。</p>
 
-<p>（5）服务器接收到包含Cookie报头的请求，检索其Cookie中与用户有关的信息，生成一个客户端所请示的页面应答传递给客户端。 浏览器的每一次网页请求，都可以传递已存在的Cookie文件，例如，浏览器的打开或刷新网页操作。</p>
+<p><strong>Cookie的属性</strong></p>
+
+<ol>
+  <li>domain: domain属性可以使多个web服务器共享cookie。domain属性的默认值是创建cookie的网页所在服务器的主机名。不能将一个cookie的域设置成服务器所在的域之外的域。
+  例如让位于a.sodao.com的服务器能够读取b.sodao.com设置的cookie值。如果b.sodao.com的页面创建的cookie把 它的path属性设置为”/”，把domain属性设置成”.sodao.com”，那么所有位于b.sodao.com的网页和所有位于 a.sodao.com的网页，以及位于sodao.com域的其他服务器上的网页都可以访问这个cookie。</li>
+  <li>path:  它指定与cookie关联在一起的网页。在默认的情况下cookie会与创建它的网页，该网页处于同一目录下的网页以及与这个网页所在目录下的子目录下的网页关联</li>
+  <li>expires(max-age):指定了cookie的生存期，默认情况下cookie是暂时存在的，他们存储的值只在浏览器会话期间存在，当用户退出浏览器后这些值也会丢失，如果想让 cookie存在一段时间，就要为expires属性设置为未来的一个用毫秒数表示的过期日期或时间点，expires默认为设置的expires的当前 时间。现在已经被max-age属性所取代，max-age用秒来设置cookie的生存期。
+如果max-age属性为正数，则表示该cookie会在max-age秒之后自动失效。浏览器会将max-age为正数的cookie持久化，即 写到对应的cookie文件中。无论客户关闭了浏览器还是电脑，只要还在max-age秒之前，登录网站时该cookie仍然有效。
+如果max-age为负数，则表示该cookie仅在本浏览器窗口以及本窗口打开的子窗口内有效，关闭窗口后该cookie即失效。max-age 为负数的Cookie，为临时性cookie，不会被持久化，不会被写到cookie文件中。cookie信息保存在浏览器内存中，因此关闭浏览器该 cookie就消失了。cookie默认的max-age值为-1。
+‍如果max-age为0，则表示删除该cookie。cookie机制没有提供删除cookie的方法，因此通过设置该cookie即时失效实现删除cookie的效果。失效的Cookie会被浏览器从cookie文件或者内存中删除。
+如果不设置expires或者max-age这个cookie默认是Session的，也就是关闭浏览器该cookie就消失了。</li>
+  <li>secure:  它是一个布尔值，指定在网络上如何传输cookie，默认是不安全的，通过一个普通的http连接传输；secure属性并不能对Cookie内容加密，因而不能保证绝对的安全性。</li>
+  <li>HttpOnly: HttpOnly 属性限制了 cookie 对 HTTP 请求的作用范围。特别的，该属性指示用户代理忽略那些通过”非 HTTP” 方式对 cookie 的访问（比如浏览器暴露给js的接口）。注意 HttpOnly 属性和 Secure 属性相互独立：一个 cookie 既可以是 HttpOnly 的也可以有 Secure 属性。
+ 在前段时间的项目中我就用js去读取一个cookie，结果怎么都取不到这个值，最后查证这个cookie是httpOnly的，花了近2个小时，悲剧了。</li>
+</ol>
+
+<p>我们可以通过响应头来处理：</p>
+
+<p><em>response.setHeader(“Set-Cookie”,”name=value;Path=/;Domain=domain;Max-Age=seconds;HttpOnly”);</em></p>
+
+<p><em>Max-Age的单位为秒（second）</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cookie的生命周期
+</code></pre>
+</div>
+
+<p>Cookie在生成时就会被指定一个Expire值，这就是Cookie的生存周期，在这个周期内Cookie有效，超出周期Cookie就会被清除。有些页面将Cookie的生存周期设置为“0”或负值，这样在关闭浏览器时，就马上清除Cookie，不会记录用户信息，更加安全。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>cookie的限制
 </code></pre>
 </div>
 
 <p>在进行页面cookie操作的时候，应该尽量保证cookie个数小于20个，总大小 小于4KB。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Cookie的安全问题
+</code></pre>
+</div>
+
+<p>Cookie的目的是为用户带来方便，为网站带来增值，一般情况下不会造成严重的安全威胁。Cookie文件不能作为代码执行，也不会传送病毒，它为用户所专有并只能由创建它的服务器来读取。另外，浏览器一般只允许存放300个Cookie，每个站点最多存放20个Cookie，每个Cookie的大小限制为4KB，因此，Cookie不会塞满硬盘，更不会被用作“拒绝服务”攻击手段。 但是，Cookie作为用户身份的替代，其安全性有时决定了整个系统的安全性，Cookie的安全性问题不容忽视。</p>
+
+<p><strong>Cookie欺骗</strong>: Cookie记录了用户的帐户ID、密码之类的信息，通常使用MD5方法加密后在网上传递。经过加密处理后的信息即使被网络上一些别有用心的人截获也看不懂。然而，现在存在的问题是，截获Cookie的人不需要知道这些字符串的含义，只要把别人的Cookie向服务器提交，并且能够通过验证，就可以冒充受害人的身份登陆网站，这种行为叫做Cookie欺骗。 
+非法用户通过Cookie欺骗获得相应的加密密钥，从而访问合法用户的所有个性化信息，包括用户的E-mail甚至帐户信息，对个人信息造成严重危害。</p>
+
+<p><strong>Cookie截获</strong> :Cookie以纯文本的形式在浏览器和服务器之间传送，很容易被他人非法截获和利用。任何可以截获Web通信的人都可以读取Cookie。 
+ Cookie被非法用户截获后，然后在其有效期内重放，则此非法用户将享有合法用户的权益。</p>
 
 </div>
       </div>
