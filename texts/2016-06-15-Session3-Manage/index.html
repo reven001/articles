@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <!-- Canonical link to help search engines -->
+  <link rel="canonical" href="/articles/texts/2016-06-15-Session3-Manage/"/>
+
+  <!-- Basic meta elements -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+
+  <!--   Dublin Core metadata for Zotero -->  
+  <meta name="DC.title" content="小谈Session(3)--Session会话集中管理（Spring Session）" />
+  <meta name="DC.creator" content="" />
+  <meta name="DC.contributor" content="" />
+  <meta name="DC.date" content="" />
+  <meta name="DC.rights" content="" />
+  <meta name="DC.source" content="reven的文章" />
+  
+  <!-- Open Graph metadata -->
+  <meta property="og:title" content="小谈Session(3)--Session会话集中管理（Spring Session）"/>
+  <meta property="og:author" content=""/>
+  <meta property="og:book:release_date" content=""/>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content=""/>
+   
+  <title>
+    
+      小谈Session(3)--Session会话集中管理（Spring Session）
+    
+  </title>
+
+  <!-- CSS links -->
+  <link rel="stylesheet" href="/articles/public/css/syntax.css"/>
+  <link rel="stylesheet" href="/articles/public/css/ed.css"/>
+ 
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/articles/public/apple-touch-icon-precomposed.png"/>
+  <link rel="shortcut icon" href="/articles/public/favicon.ico"/>
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/articles/atom.xml"/>
+</head>
+
+
+  <body>
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/articles/" title="Home">reven的文章</a>
+            <br><small>我思故我在</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content" id="main">
+        <div class="poetry">
+  <h1 class="post-title">小谈Session(3)--Session会话集中管理（Spring Session）</h1>
+  <p class="citation">  2016-06-15</p>
+  <p>上一篇文章，说到了Session的回话管理，其中Spring提供了Session回话的集中管理方案-<a href="http://docs.spring.io/spring-session/docs/current/reference/html5/#samples">Spring Session</a>,</p>
+
+<p>以下是节选自spring-session的开发文档，描述spring-session解决的问题：</p>
+
+<p>Spring Session provides an API and implementations for managing a user’s session information. It also provides transparent integration with:</p>
+
+<blockquote>
+  <p><strong>1.HttpSession</strong> - allows replacing the HttpSession in an application container (i.e. Tomcat) neutral way. Additional features include:</p>
+
+  <ul>
+    <li>Clustered Sessions Spring Session makes it trivial to support clustered sessions without being tied to an application container specific solution.</li>
+    <li>
+      <p>Multiple Browser Sessions Spring Session supports managing multiple users’ sessions in a single browser instance (i.e. multiple authenticated accounts similar to Google).</p>
+    </li>
+    <li>RESTful APIs Spring Session allows providing session ids in headers to work with RESTful APIs</li>
+  </ul>
+
+  <p><strong>2.WebSocket</strong> - provides the ability to keep the HttpSession alive when receiving WebSocket messages</p>
+</blockquote>
+
+<blockquote>
+  <p>spring-session主要提供API和实现来管理用户的session会话。提供两种方式的会话集成：</p>
+
+  <p><strong>HttpSession</strong>：提供解决以下三个方面的解决方案</p>
+
+  <ul>
+    <li>
+      <p>集群的会话管理：传统的会话是通过Web容器的自带会话管理去管理会话，spring-session提供了自己的会话管理机制可以将会话存储在Redis以及关系数据库中，实现会话的集群。</p>
+    </li>
+    <li>
+      <p>多用户会话管理:可以解决多个账户在一个浏览器中共存的问题。</p>
+    </li>
+    <li>
+      <p>RESTful会话管理：从http header中获取sessionID。</p>
+    </li>
+  </ul>
+
+  <p><strong>WebSocket</strong> ：解决WebSocket通讯时会话的管理</p>
+</blockquote>
+
+<hr />
+
+<p><strong>spring-session集成步骤</strong></p>
+
+<p><em>1.配置过滤器</em></p>
+
+<p><em>2.配置JedisConnectionFactory</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>XML配置
+
+# web.xml #
+ #配置过滤器#
+&lt;context-param&gt;
+	&lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+	&lt;param-value&gt;
+		/WEB-INF/spring/*.xml
+	&lt;/param-value&gt;
+&lt;/context-param&gt;
+
+&lt;filter&gt;
+	&lt;filter-name&gt;springSessionRepositoryFilter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.springframework.web.filter.DelegatingFilterProxy&lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;springSessionRepositoryFilter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+
+# /WEB-INF/spring/spring.xml #
+ # 配置JedisConnectionFactory#
+&lt;context:annotation-config/&gt;
+&lt;bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration"/&gt;
+&lt;bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" p:host-name="localhost" p:port="6379" /&gt;
+</code></pre>
+</div>
+
+<hr />
+
+<div class="highlighter-rouge"><pre class="highlight"><code>代码配置
+  #配置过滤器#
+public class Initializer
+	extends AbstractHttpSessionApplicationInitializer { // &lt;1&gt;
+
+public Initializer() {
+	super(Config.class); // &lt;2&gt;
+}
+}
+
+# 配置JedisConnectionFactory#
+@EnableRedisHttpSession // &lt;1&gt;
+public class Config {
+
+@Bean
+public JedisConnectionFactory connectionFactory() {
+	return new JedisConnectionFactory(); // &lt;2&gt;
+}
+}
+</code></pre>
+</div>
+
+<p>Rest的配置</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>@Configuration
+@EnableRedisHttpSession // &lt;1&gt;
+public class HttpSessionConfig {
+
+@Bean
+public JedisConnectionFactory connectionFactory() {
+	return new JedisConnectionFactory(); // &lt;2&gt;
+}
+
+@Bean
+public HttpSessionStrategy httpSessionStrategy() {
+	return new HeaderHttpSessionStrategy(); // &lt;3&gt;
+}
+}
+</code></pre>
+</div>
+
+<p>默认的HttpSessionStrategy为CookieHttpSessionStrategy,是以获取Cookie名为SESSION的值作为sessionID，在REST中使用到的是HeaderHttpSessionStrategy，获取到header中的x-auth-token的值作为sessionID</p>
+
+</div>
+      </div>
+    </div>
+  </body>
+</html>

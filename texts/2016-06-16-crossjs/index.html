@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <!-- Canonical link to help search engines -->
+  <link rel="canonical" href="/articles/texts/2016-06-16-crossjs/"/>
+
+  <!-- Basic meta elements -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+
+  <!--   Dublin Core metadata for Zotero -->  
+  <meta name="DC.title" content="跨域访问" />
+  <meta name="DC.creator" content="" />
+  <meta name="DC.contributor" content="" />
+  <meta name="DC.date" content="" />
+  <meta name="DC.rights" content="" />
+  <meta name="DC.source" content="reven的文章" />
+  
+  <!-- Open Graph metadata -->
+  <meta property="og:title" content="跨域访问"/>
+  <meta property="og:author" content=""/>
+  <meta property="og:book:release_date" content=""/>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content=""/>
+   
+  <title>
+    
+      跨域访问
+    
+  </title>
+
+  <!-- CSS links -->
+  <link rel="stylesheet" href="/articles/public/css/syntax.css"/>
+  <link rel="stylesheet" href="/articles/public/css/ed.css"/>
+ 
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/articles/public/apple-touch-icon-precomposed.png"/>
+  <link rel="shortcut icon" href="/articles/public/favicon.ico"/>
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/articles/atom.xml"/>
+</head>
+
+
+  <body>
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/articles/" title="Home">reven的文章</a>
+            <br><small>我思故我在</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content" id="main">
+        <div class="poetry">
+  <h1 class="post-title">跨域访问</h1>
+  <p class="citation">  2016-06-16</p>
+  <p>要理解跨域访问，首先得理解什么事同源策略。</p>
+
+<h1 id="section">同源策略</h1>
+<table>
+<tbody>
+<tr>
+<th>URL</th>
+<th>说明</th>
+<th>是否允许通信</th>
+</tr>
+<tr>
+<td>http://www.a.com/a.js<br />
+http://www.a.com/b.js</td>
+<td>同一域名下</td>
+<td>允许</td>
+</tr>
+<tr>
+<td>http://www.a.com/lab/a.js<br />
+http://www.a.com/script/b.js</td>
+<td>同一域名下不同文件夹</td>
+<td>允许</td>
+</tr>
+<tr>
+<td>http://www.a.com:8000/a.js<br />
+http://www.a.com/b.js</td>
+<td>同一域名，不同端口</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td>http://www.a.com/a.js<br />
+https://www.a.com/b.js</td>
+<td>同一域名，不同协议</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td>http://www.a.com/a.js<br />
+http://70.32.92.74/b.js</td>
+<td>域名和域名对应ip</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td>http://www.a.com/a.js<br />
+http://script.a.com/b.js</td>
+<td>主域相同，子域不同</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td>http://www.a.com/a.js<br />
+http://a.com/b.js</td>
+<td>同一域名，不同二级域名（同上）</td>
+<td>不允许（cookie这种情况下也不允许访问）</td>
+</tr>
+<tr>
+<td>http://www.cnblogs.com/a.js<br />
+http://www.a.com/b.js</td>
+<td>不同域名</td>
+<td>不允许</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="section-1">注意两点</h2>
+
+<p>第一，如果是协议和端口造成的跨域问题“前台”是无能为力的，</p>
+
+<p>第二：在跨域问题上，域仅仅是通过“URL的首部”来识别而不会去尝试判断相同的ip地址对应着两个域或两个域是否在同一个ip上。</p>
+
+<h1 id="section-2">解决办法</h1>
+
+<ul>
+  <li>iframe+document.domain</li>
+</ul>
+
+<blockquote>
+  <p>对于主域相同而子域不同的例子，可以通过设置document.domain的办法来解决。 具体的做法是可以在http://www.a.com/a.html和http://script.a.com/b.html两个文件中分别加上 document.domain = ‘a.com’；然后通过a.html文件中创建一个iframe，去控制iframe的contentDocument，这样两个js文件之间就可以 “交互”了。当然这种办法只能解决主域相同而二级域名不同的情况，如果你异想天开的把script.a.com的domian设为alibaba.com 那显然是会报错地！</p>
+
+  <p>代码如下：
+www.a.com上的a.html</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>document.domain = 'a.com';
+var ifr = document.createElement('iframe');
+ifr.src = 'http://script.a.com/b.html';
+ifr.style.display = 'none';
+document.body.appendChild(ifr);
+ifr.onload = function(){
+var doc = ifr.contentDocument || ifr.contentWindow.document;
+// 在这里操纵b.html
+alert(doc.getElementsByTagName("h1")[0].childNodes[0].nodeValue);
+};
+</code></pre>
+  </div>
+
+  <p>script.a.com上的b.html</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>document.domain = 'a.com';
+</code></pre>
+  </div>
+
+  <p>这种方式适用于{www.kuqin.com, kuqin.com, script.kuqin.com, css.kuqin.com}中的任何页面相互通信。</p>
+
+  <p>备注：某一页面的domain默认等于window.location.hostname。主域名是不带www的域名，例如a.com，主域名前面带前缀的通常都为二级域名或多级域名，例如www.a.com其实是二级域名。 domain只能设置为主域名，不可以在b.a.com中将domain设置为c.a.com。</p>
+
+  <p>问题：</p>
+
+  <p>1、安全性，当一个站点（b.a.com）被攻击后，另一个站点（c.a.com）会引起安全漏洞。</p>
+
+  <p>2、如果一个页面中引入多个iframe，要想能够操作所有iframe，必须都得设置相同domain。</p>
+</blockquote>
+
+<ul>
+  <li>iframe+location.hash</li>
+</ul>
+
+<blockquote>
+  <p>这个办法比较绕，但是可以解决完全跨域情况下的脚步置换问题。原理是利用location.hash来进行传值。在url： http://a.com#helloword中的‘#helloworld’就是location.hash，改变hash并不会导致页面刷新，所以可 以利用hash值来进行数据传递，当然数据容量是有限的。假设域名a.com下的文件cs1.html要和cnblogs.com域名下的 cs2.html传递信息，cs1.html首先创建自动创建一个隐藏的iframe，iframe的src指向cnblogs.com域名下的 cs2.html页面，这时的hash值可以做参数传递用。cs2.html响应请求后再将通过修改cs1.html的hash值来传递数据（由于两个页面不在同一个域下IE、Chrome不允许修改parent.location.hash的值，所以要借助于a.com域名下的一个代理iframe；Firefox可以修改）。同时在cs1.html上加一个定时器，隔一段时间来判断location.hash的值有没有变化，一点有变化则获取获取hash值。
+代码如下：</p>
+
+  <p>先是a.com下的文件cs1.html文件：</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>function startRequest(){
+var ifr = document.createElement('iframe');
+ifr.style.display = 'none';
+ifr.src = 'http://www.cnblogs.com/lab/cscript/cs2.html#paramdo';
+document.body.appendChild(ifr);
+}
+
+function checkHash() {
+try {
+var data = location.hash ? location.hash.substring(1) : '';
+if (console.log) {
+console.log('Now the data is '+data);
+}
+} catch(e) {};
+}
+setInterval(checkHash, 2000);
+</code></pre>
+  </div>
+
+  <p>cnblogs.com域名下的cs2.html:</p>
+
+  <p>//模拟一个简单的参数处理操作</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>switch(location.hash){
+case '#paramdo':
+callBack();
+break;
+case '#paramset':
+//do something……
+break;
+}
+
+function callBack(){
+try {
+parent.location.hash = 'somedata';
+} catch (e) {
+// ie、chrome的安全机制无法修改parent.location.hash，
+// 所以要利用一个中间的cnblogs域下的代理iframe
+var ifrproxy = document.createElement('iframe');
+ifrproxy.style.display = 'none';
+ifrproxy.src = 'http://a.com/test/cscript/cs3.html#somedata';// 注意该文件在"a.com"域下
+document.body.appendChild(ifrproxy);
+}
+}
+</code></pre>
+  </div>
+
+  <p>a.com下的域名cs3.html</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>//因为parent.parent和自身属于同一个域，所以可以改变其location.hash的值
+parent.parent.location.hash = self.location.hash.substring(1);
+</code></pre>
+  </div>
+
+  <p>当然这样做也存在很多缺点，诸如数据直接暴露在了url中，数据容量和类型都有限等……</p>
+</blockquote>
+
+<ul>
+  <li>iframe+window.name</li>
+</ul>
+
+<blockquote>
+  <p>有三个页面：</p>
+
+  <p>a.com/app.html：应用页面。</p>
+
+  <p>a.com/proxy.html：代理文件，一般是一个没有任何内容的html文件，需要和应用页面在同一域下。</p>
+
+  <p>b.com/data.html：应用页面需要获取数据的页面，可称为数据页面。</p>
+
+  <p>实现起来基本步骤如下：
+在应用页面（a.com/app.html）中创建一个iframe，把其src指向数据页面（b.com/data.html）。
+数据页面会把数据附加到这个iframe的window.name上，data.html代码如下：</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>  window.name = 'I was there!';// 这里是要传输的数据，大小一般为2M，IE和firefox下可以大至32M左右
+ // 数据格式可以自定义，如json、字符串
+</code></pre>
+  </div>
+</blockquote>
+
+<blockquote>
+  <p>在应用页面（a.com/app.html）中监听iframe的onload事件，在此事件中设置这个iframe的src指向本地域的代理文件（代理文件和应用页面在同一域下，所以可以相互通信）。app.html部分代码如下：</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>var state = 0, 
+iframe = document.createElement('iframe'),
+loadfn = function() {
+    if (state === 1) {
+        var data = iframe.contentWindow.name;    // 读取数据
+        alert(data);    //弹出'I was there!'
+    } else if (state === 0) {
+        state = 1;
+        iframe.contentWindow.location = "http://a.com/proxy.html";    // 设置的代理文件
+    }  
+};
+iframe.src = 'http://b.com/data.html';
+if (iframe.attachEvent) {
+    iframe.attachEvent('onload', loadfn);
+} else {
+    iframe.onload  = loadfn;
+}
+document.body.appendChild(iframe);
+</code></pre>
+  </div>
+
+  <p>获取数据以后销毁这个iframe，释放内存；这也保证了安全（不被其他域frame js访问）。</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>iframe.contentWindow.document.write('');
+iframe.contentWindow.close();
+document.body.removeChild(iframe);
+</code></pre>
+  </div>
+
+  <p>总结起来即：iframe的src属性由外域转向本地域，跨域数据即由iframe的window.name从外域传递到本地域。这个就巧妙地绕过了浏览器的跨域访问限制，但同时它又是安全操作。</p>
+</blockquote>
+
+<ul>
+  <li>使用HTML5 postMessage</li>
+</ul>
+
+<blockquote>
+  <p>HTML5中最酷的新功能之一就是 跨文档消息传输Cross Document Messaging。 下一代浏览器都将支持这个功能：Chrome 2.0+、Internet Explorer 8.0+, Firefox 3.0+, Opera 9.6+, 和 Safari 4.0+ 。 Facebook已经使用了这个功能，用postMessage支持基于web的实时消息传递。</p>
+
+  <p>otherWindow.postMessage(message, targetOrigin);
+otherWindow: 对接收信息页面的window的引用。可以是页面中iframe的contentWindow属性；window.open的返回值；通过name或下标从window.frames取到的值。
+message: 所要发送的数据，string类型。
+targetOrigin: 用于限制otherWindow，“*”表示不作限制
+a.com/index.html中的代码：</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>&lt;iframe id="ifr" src="b.com/index.html"&gt;&lt;/iframe&gt;
+
+window.onload = function() {
+var ifr = document.getElementById('ifr');
+var targetOrigin = 'http://b.com';  // 若写成'http://b.com/c/proxy.html'效果一样
+// 若写成'http://c.com'就不会执行postMessage了
+ifr.contentWindow.postMessage('I was there!', targetOrigin);
+};
+</code></pre>
+  </div>
+
+  <p>b.com/index.html中的代码：</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>window.addEventListener('message', function(event){
+    // 通过origin属性判断消息来源地址
+    if (event.origin == 'http://a.com') {
+        alert(event.data);    // 弹出"I was there!"
+        alert(event.source);  // 对a.com、index.html中window对象的引用
+     // 但由于同源策略，这里event.source不可以访问window对象
+    }
+}, false);
+</code></pre>
+  </div>
+</blockquote>
+
+<ul>
+  <li>Cross-Origin Resource Sharing</li>
+</ul>
+
+<blockquote>
+  <p>CORS是一个W3C标准，全称是”跨域资源共享”（Cross-origin resource sharing）。</p>
+
+  <p>它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。</p>
+
+  <p>为什么说它优雅呢？
+整个CORS通信过程，都是浏览器自动完成，不需要用户参与。对于开发者来说，CORS通信与同源的AJAX通信没有差别，代码完全一样。浏览器一旦发现AJAX请求跨源，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。</p>
+
+  <p>因此，实现CORS通信的关键是服务器。 只要服务器实现了CORS接口 ，就可以跨源通信。</p>
+
+  <p>解决这个问题的关键就落在了我这个负责后台的程序猿身上。</p>
+
+  <p>看看文档也不是什么难事嘛，就是需要在http头中设置Access-Control-Allow-Origin来决定需要允许哪些站点来访问。关于CROS协议更详细内容参考 跨域资源共享 CORS 详解</p>
+
+  <p>CROS常见header
+CORS具有以下常见的header</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>Access-Control-Allow-Origin: http://kbiao.me  
+
+Access-Control-Max-Age: 3628800
+
+Access-Control-Allow-Methods: GET，PUT, DELETE
+
+Access-Control-Allow-Headers: content-type
+</code></pre>
+  </div>
+
+  <p>服务器设置</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>Access-Control-Allow-Origin: &lt;origin| * // 授权的源控制
+
+Access-Control-Max-Age: &lt;delta-seconds// 授权的时间
+
+Access-Control-Allow-Credentials: true | false // 控制是否开启与Ajax的Cookie提交方式
+
+Access-Control-Allow-Methods: &lt;method&gt;[, &lt;method&gt;]* // 允许请求的HTTP Method
+
+Access-Control-Allow-Headers: &lt;field-name&gt;[, &lt;field-name&gt;]* // 控制哪些header能发送真正&gt; 的请求   
+</code></pre>
+  </div>
+
+  <p>这里还有一处需要前端工程师协作的地方就是cookie的传递,默认情况下通过CORS这样的方式是不会传递cookie.一般强制性将cookie添加到header的做法,也会被浏览器拒绝并报错.上面看到了在服务器端会通过添加一个response头,Access-Control-Allow-Credentials来控制是否允许Cookie的提交.</p>
+
+  <p>在Angular中我们需要进行一些设置达到目的:</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>$http.post(url, {withCredentials: true, ...})
+
+// 或者
+
+$http({withCredentials: true, ...}).post(...)
+
+// 或者
+
+.config(function ($httpProvider) {
+
+  $httpProvider.defaults.withCredentials = true;
+
+}
+</code></pre>
+  </div>
+
+  <p>如果是jQuery则要设置如下:</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>$.ajax("www.cros.com/api/data", {
+
+  type: "GET",
+
+  xhrFields: {
+
+withCredentials: true
+
+  },
+
+  crossDomain: true,
+
+  success: function(data, status, xhr) {
+
+  }
+
+});
+</code></pre>
+  </div>
+</blockquote>
+
+<ul>
+  <li>JSONP</li>
+</ul>
+
+<blockquote>
+  <p>原理</p>
+
+  <p>jsonp解决跨域问题的原理是，浏览器的script标签是不受同源策略限制(你可以在你的网页中设置script的src属性问cdn服务器中静态文件的路径)。那么就可以使用script标签从服务器获取数据，请求时添加一个参数为callbakc=?，?号时你要执行的回调方法。</p>
+
+  <p>前端实现</p>
+
+  <p>以jQuery2.1.3的ajax方法为例</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code>$.ajax({
+url:"",
+dataType:"jsonp",
+data:{
+params:""
+}
+}).done(function(data){
+//dosomething..
+}) 仅仅是客户端使用jsonp请求数据是不行的，因为jsonp的请求是放在script标签中的，和普通请求不同的地方在于，它请求到的是一段js代码，如果服务端返回了json字符串，那么浏览器就会报错。所以jsonp返回数据需要服务端做一些处理。
+</code></pre>
+  </div>
+
+  <p>服务端返回数据处理</p>
+
+  <p>上面说了jsonp的原理是利用script标签来解决跨域，但是script标签是用来获取js代码的，那么我们怎么获取到请求的数据呢。</p>
+
+  <p>这就需要服务端做一些判断，当参数中带有callback属性时，返回的type要为application/javascript,把数据作为callback的参数执行。下面是jsonp返回的数据的格式示例</p>
+
+  <div class="highlighter-rouge"><pre class="highlight"><code> `typeof jQuery21307270454438403249_1428044213638 === 'function' &amp;&amp; jQuery21307270454438403249_1428044213638
+ ({"code":1,"msg":"success","data":{"test":"test"}});`
+</code></pre>
+  </div>
+</blockquote>
+
+</div>
+      </div>
+    </div>
+  </body>
+</html>
